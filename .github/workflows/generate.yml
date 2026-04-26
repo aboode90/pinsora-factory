@@ -11,4 +11,4 @@ jobs:
     steps:
       - name: Ping Site to Generate Image
         run: |
-          curl -L "https://pinsora.vercel.app/api/cron/generate?key=${{ secrets.AUTH_SECRET }}"
+          curl -L "https://pinsora.vercel.app/api/cron/generate?key=${{ secrets.CRON_SECRET }}"

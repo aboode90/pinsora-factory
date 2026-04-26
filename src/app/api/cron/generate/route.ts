@@ -13,10 +13,10 @@ export async function GET(req: Request) {
     // 1. Security Check
     const { searchParams } = new URL(req.url);
     const key = searchParams.get("key");
-    const secret = process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET;
+    const secret = process.env.CRON_SECRET;
 
     if (!key || key !== secret) {
-      console.error("CRON AUTH FAILED: Keys do not match");
+      console.error("CRON AUTH FAILED");
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
