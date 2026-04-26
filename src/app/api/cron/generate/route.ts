@@ -10,10 +10,13 @@ export const maxDuration = 60; // Allow up to 1 minute for AI generation
 
 export async function GET(req: Request) {
   try {
-    // 1. Security Check (Optional but recommended)
+    // 1. Security Check
     const { searchParams } = new URL(req.url);
     const key = searchParams.get("key");
-    if (key !== process.env.AUTH_SECRET && process.env.NODE_ENV === "production") {
+    const secret = process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET;
+
+    if (!key || key !== secret) {
+      console.error("CRON AUTH FAILED: Keys do not match");
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -92,10 +95,31 @@ export async function GET(req: Request) {
       }
     });
 
+    // 9. Log success
+    await prisma.aiGenerationLog.create({
+      data: {
+        prompt,
+        resultUrl: publicUrl,
+        userId: botId,
+        status: "COMPLETED",
+        sourceImageId: newImage.id
+      }
+    });
+
     return NextResponse.json({ success: true, imageId: newImage.id });
 
   } catch (error: any) {
     console.error("CRON ERROR:", error);
+
+    // Log failure
+    await prisma.aiGenerationLog.create({
+      data: {
+        prompt: "N/A",
+        status: "FAILED",
+        errorMessage: error.message
+      }
+    }).catch(() => {});
+
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
-import { Users, Image as ImageIcon, Flag, Tag, ArrowRight } from "lucide-react";
+import { Users, Image as ImageIcon, Flag, Tag, Sparkles, ArrowRight } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = {
@@ -84,6 +84,13 @@ export default async function AdminDashboard() {
               <div className="flex items-center gap-3">
                 <Tag className="h-5 w-5 text-neutral-400" />
                 <span className="font-medium">Manage Tags</span>
+              </div>
+              <ArrowRight className="h-4 w-4 text-neutral-300 group-hover:translate-x-1 transition-transform" />
+            </Link>
+            <Link href="/admin/ai-logs" className="flex items-center justify-between p-4 rounded-xl hover:bg-neutral-50 transition-colors border border-neutral-100 group">
+              <div className="flex items-center gap-3">
+                <Sparkles className="h-5 w-5 text-violet-400" />
+                <span className="font-medium">AI Factory Logs</span>
               </div>
               <ArrowRight className="h-4 w-4 text-neutral-300 group-hover:translate-x-1 transition-transform" />
             </Link>
