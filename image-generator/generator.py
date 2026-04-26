@@ -21,16 +21,17 @@ from botocore.config import Config
 
 # ─── Config ──────────────────────────────────────────────────────────────────
 
-DATABASE_URL = "postgresql://postgres.bfifpivnhtdswzdqgpbf:Ali%40313%40Ali@aws-1-ap-northeast-1.pooler.supabase.com:6543/postgres"
-LEONARDO_API_KEY = "febe17a1-ed86-40ac-99bc-a5f8a4d9f61f"
+# Fetch from environment (GitHub Secrets) or use hardcoded fallback
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres.bfifpivnhtdswzdqgpbf:Ali%40313%40Ali@aws-1-ap-northeast-1.pooler.supabase.com:5432/postgres?sslmode=require")
+LEONARDO_API_KEY = os.getenv("LEONARDO_API_KEY", "febe17a1-ed86-40ac-99bc-a5f8a4d9f61f")
 FLUX_SCHNELL_MODEL_ID = "1dd50843-d653-4516-a8e3-f0238ee453ff"
 
 # Cloudflare R2
-R2_ACCOUNT_ID = "4c3a678caafd0d440953401f0dfeb90b"
-R2_ACCESS_KEY_ID = "b9f3d619c73950e91a4cbb0adb9098b4"
-R2_SECRET_ACCESS_KEY = "bd07c85a2d10b55bcc73a1eca2d684a183e7470c3e696aad349a73057447e6fb"
-R2_BUCKET_NAME = "pinsora"
-R2_PUBLIC_URL = "https://pub-20e27c6bae2741a69bbcef7e9fbdf6ce.r2.dev"
+R2_ACCOUNT_ID = os.getenv("R2_ACCOUNT_ID", "4c3a678caafd0d440953401f0dfeb90b")
+R2_ACCESS_KEY_ID = os.getenv("R2_ACCESS_KEY_ID", "b9f3d619c73950e91a4cbb0adb9098b4")
+R2_SECRET_ACCESS_KEY = os.getenv("R2_SECRET_ACCESS_KEY", "bd07c85a2d10b55bcc73a1eca2d684a183e7470c3e696aad349a73057447e6fb")
+R2_BUCKET_NAME = os.getenv("R2_BUCKET_NAME", "pinsora")
+R2_PUBLIC_URL = os.getenv("R2_PUBLIC_URL", "https://pub-20e27c6bae2741a69bbcef7e9fbdf6ce.r2.dev")
 
 TARGET_IMAGES_PER_CATEGORY = 5
 INTERVAL_SECONDS = 60  # 1 minute between generations (faster growth)
