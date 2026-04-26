@@ -56,3 +56,24 @@ export function generateImageKey(userId: string, filename: string): string {
   const ext = filename.split(".").pop();
   return `images/${userId}/${timestamp}.${ext}`;
 }
+
+/**
+ * Upload an image to R2 from a remote URL
+ */
+export async function uploadToR2FromUrl(url: string, key: string): Promise<string> {
+  const response = await fetch(url);
+  if (!response.ok) throw new Error("Failed to fetch image from source");
+
+  const arrayBuffer = await response.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
+
+  const command = new PutObjectCommand({
+    Bucket: BUCKET_NAME,
+    Key: key,
+    Body: buffer,
+    ContentType: response.headers.get("Content-Type") || "image/jpeg",
+  });
+
+  await r2Client.send(command);
+  return `${R2_PUBLIC_URL}/${key}`;
+}
