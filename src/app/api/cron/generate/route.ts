@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { uploadToR2FromUrl } from "@/lib/r2";
 
 // Leonardo.ai Config
-const LEONARDO_API_KEY = process.env.LEONARDO_API_KEY;
+const LEONARDO_API_KEY = process.env.LEONARDO_API_KEY?.trim();
 const MODEL_ID = "1dd50843-d653-4516-a8e3-f0238ee453ff"; // FLUX Schnell
 
 export const maxDuration = 60; // Allow up to 1 minute for AI generation
