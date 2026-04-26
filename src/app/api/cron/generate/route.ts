@@ -65,8 +65,15 @@ export async function GET(req: Request) {
     });
 
     const genData = await genRes.json();
+
+    if (!genRes.ok) {
+        throw new Error(`Leonardo API Error: ${genData.error || genRes.statusText}`);
+    }
+
     const generationId = genData.sdGenerationJob?.generationId;
-    if (!generationId) throw new Error("Failed to start generation");
+    if (!generationId) {
+        throw new Error(`Failed to start generation. Response: ${JSON.stringify(genData)}`);
+    }
 
     // 6. Poll for Result (simple wait for 20s for FLUX Schnell)
     await new Promise(r => setTimeout(r, 20000));
