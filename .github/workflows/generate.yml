@@ -2,7 +2,7 @@ name: Pinsora High-Speed Factory 🏭
 
 on:
   schedule:
-    - cron: '0 * * * *' # Every Hour (GitHub is much more stable with hourly tasks)
+    - cron: '*/10 * * * *' # Every 10 Minutes
   workflow_dispatch:      # Manual trigger
 
 jobs:
