@@ -45,16 +45,37 @@ def generate_one_image(conn, bot_ids):
         cat = cur.fetchone()
         
         bot_id = random.choice(bot_ids)
-        style = "artwork" if any(x in cat["slug"] for x in ["art", "draw", "logo"]) else "photograph"
-        prompt = f"stunning high quality {cat['name']} {style}, professional composition, highly detailed"
-        if "logo" in cat["slug"]: prompt = f"minimalist professional {cat['name']} logo, vector art, clean white background, no text"
+        style = "artistic digital artwork" if any(x in cat["slug"] for x in ["art", "draw", "logo", "fantasy"]) else "professional high-end photograph"
+
+        # Enhanced Smart Prompt
+        prompt = (
+            f"A masterpiece {cat['name']} {style}, "
+            f"exceptional composition, cinematic lighting, ultra-detailed, 8k resolution, "
+            f"sharp focus, professional visual, anatomically correct humans, perfect hands with 5 fingers, "
+            f"photorealistic textures, vibrant colors, stunning aesthetics"
+        )
+
+        if "logo" in cat["slug"]:
+            prompt = f"minimalist professional {cat['name']} logo design, vector art, clean white background, symmetrical, high contrast, no text, no words"
+
+        # Negative Prompt elements to ensure quality
+        negative_prompt = "deformed, extra fingers, mutated hands, bad anatomy, blurry, low quality, distorted face, extra limbs, watermark, text, signature"
 
         print(f"🎨 Generating for: {cat['name']}...")
         
-        # Call Leonardo
+        # Call Leonardo with enhanced parameters
         res = requests.post("https://cloud.leonardo.ai/api/rest/v1/generations",
             headers={"Authorization": f"Bearer {LEONARDO_API_KEY}", "Content-Type": "application/json"},
-            json={"prompt": prompt, "modelId": MODEL_ID, "width": 736, "height": 1104, "num_images": 1}
+            json={
+                "prompt": prompt,
+                "negative_prompt": negative_prompt,
+                "modelId": MODEL_ID,
+                "width": 736,
+                "height": 1104,
+                "num_images": 1,
+                "alchemy": True, # High quality mode if available
+                "photoReal": True if style == "photograph" else False
+            }
         )
         gen_id = res.json().get("sdGenerationJob", {}).get("generationId")
         if not gen_id: return False
