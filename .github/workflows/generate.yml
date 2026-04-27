@@ -1,14 +1,33 @@
-name: Pinsora Image Factory 🏭
+name: Pinsora High-Speed Factory 🏭
 
 on:
   schedule:
-    - cron: '*/5 * * * *' # Every 5 minutes
-  workflow_dispatch:      # Allows manual trigger from GitHub UI
+    - cron: '0 * * * *' # Every Hour (GitHub is much more stable with hourly tasks)
+  workflow_dispatch:      # Manual trigger
 
 jobs:
-  ping-generator:
+  generate:
     runs-on: ubuntu-latest
     steps:
-      - name: Ping Site to Generate Image
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
         run: |
-          curl -L "https://pinsora.vercel.app/api/cron/generate?key=${{ secrets.CRON_SECRET }}"
+          pip install requests psycopg2-binary boto3
+
+      - name: Run Factory (10 images per run)
+        run: python image-generator/generator.py --batch 10
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          LEONARDO_API_KEY: ${{ secrets.LEONARDO_API_KEY }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_BUCKET_NAME: ${{ secrets.R2_BUCKET_NAME }}
+          R2_PUBLIC_URL: ${{ secrets.R2_PUBLIC_URL }}
